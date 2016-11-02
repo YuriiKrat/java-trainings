@@ -13,16 +13,6 @@ import java.io.InputStreamReader;
 public class Controller {
 
     /**
-     * Minimal value of a range
-     */
-    private static final int MIN_VALUE = 0;
-
-    /**
-     * Maximal value of a range
-     */
-    private static final int MAX_VALUE = 100;
-
-    /**
      * The model in MVC pattern
      */
     private Model model;
@@ -46,31 +36,48 @@ public class Controller {
      * Represents the act of playing game
      */
     public void playGame(){
-        model.setMinValue(MIN_VALUE);
-        model.setMaxValue(MAX_VALUE);
-        model.setComputerValue((int)(Math.random() * 100));
-        int userValue = -1;
+
+        int userValue = 0;
+        boolean victory = false;
         boolean correct = false;
         view.printMessage(View.WELCOME_STRING);
         do {
+            try {
+                view.printMessage(View.ENTER_MIN);
+                int minValue = getInputValue();
+                view.printMessage(View.ENTER_MAX);
+                int maxValue = getInputValue();
+                if(model.setLimits(minValue, maxValue)) {
+                    correct = true;
+                    model.setComputerValue();
+                } else {
+                    view.printMessage(View.WRONG_INPUT_DATA);
+                }
+            } catch (NumberFormatException | IOException e) {
+                view.printMessage(View.WRONG_INPUT_DATA);
+            }
+        } while (!correct);
+
+        do {
             view.printMessageAndTwoInts(View.ENTER_NUMBER, model.getMinValue(), model.getMaxValue());
-            while(!correct) {
+            do {
+                correct = true;
                 try {
                     userValue = getInputValue();
-                    correct = true;
+                    if(model.checkRange(userValue)) {
+                        correct = false;
+                    } else {
+                        view.printMessage(View.WRONG_INPUT_DATA_RANGE);
+                    }
                 } catch (NumberFormatException | IOException e) {
-                    e.printStackTrace();
+                    view.printMessage(View.WRONG_INPUT_DATA);
                 }
-            }
-            if (userValue > model.getComputerValue()) {
-                model.setMaxValue(userValue);
-                view.printMessage(View.MORE_THAN);
-            } else if (userValue < model.getComputerValue()) {
-                model.setMinValue(userValue);
-                view.printMessage(View.LESS_THAN);
+            } while(correct);
+            if (model.checkMoreOrLess(userValue)) {
+                victory = true;
             }
             model.getUserValues().add(userValue);
-        } while(userValue != model.getComputerValue());
+        } while(!victory);
         view.printMessage(View.VICTORY);
         view.printAttempts(model.getUserValues());
     }
@@ -81,10 +88,7 @@ public class Controller {
      */
     public int getInputValue() throws IOException, NumberFormatException{
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        int inputNumber = Integer.parseInt(bufferedReader.readLine());
-        if (inputNumber > model.getMaxValue() || inputNumber < model.getMinValue()) {
-            throw new IOException();
-        }
-        return inputNumber;
+        return Integer.parseInt(bufferedReader.readLine());
     }
+
 }

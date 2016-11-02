@@ -13,10 +13,13 @@ public class View {
     // Text's constants
     public static final String WELCOME_STRING = "Welcome to the game \"More And Less!\"";
     public static final String WRONG_INPUT_DATA = "Wrong input! Repeat please!";
+    public static final String WRONG_INPUT_DATA_RANGE = "Wrong range! Repeat please!";
     public static final String ENTER_NUMBER = "Please, enter the number in the range from %d to %d:\n";
     public static final String VICTORY = "Congratulation! You won!";
-    public static final String LESS_THAN = "Your number is smaller than correct number!";
-    public static final String MORE_THAN = "Your number is bigger than correct number!";
+    public static final String ENTER_MIN = "Enter minimal value of the range: ";
+    public static final String ENTER_MAX = "Enter maximal value of the range: ";
+//    public static final String LESS_THAN = "Your number is smaller than correct number!";
+//    public static final String MORE_THAN = "Your number is bigger than correct number!";
     private static final String ATTEMPTS = "You made %d attempts: ";
 
     /**

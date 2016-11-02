@@ -26,19 +26,7 @@ public class TestController {
         model = new Model();
         view = new View();
         controller = new Controller(model, view);
-        model.setMinValue(MIN_VALUE);
-        model.setMaxValue(MAX_VALUE);
-    }
-
-    /**
-     * Tests handling exceptions with wrong range numbers
-     * @throws IOException
-     */
-    @Test(expected = IOException.class)
-    public void testInvalidRange() throws IOException{
-        ByteArrayInputStream in = new ByteArrayInputStream("-1".getBytes());
-        System.setIn(in);
-        controller.getInputValue();
+        model.setLimits(MIN_VALUE, MAX_VALUE);
     }
 
     /**
@@ -58,9 +46,20 @@ public class TestController {
      */
     @Test
     public void testVictory() throws IOException{
-        ByteArrayInputStream in = new ByteArrayInputStream(Integer.toString(MAX_VALUE).getBytes());
+        ByteArrayInputStream in = new ByteArrayInputStream(Integer.toString(MAX_VALUE - 1).getBytes());
         System.setIn(in);
-        model.setComputerValue(MAX_VALUE);
+        model.setComputerValue(MAX_VALUE - 1);
         Assert.assertEquals(model.getComputerValue(), controller.getInputValue());
+    }
+
+    /**
+     * Tests if computer value is in a range
+     */
+    @Test
+    public void testComputerValueRange() {
+        for (int i = 0; i < 1000 ; i++) {
+            model.setComputerValue();
+            Assert.assertTrue(model.checkRange(model.getComputerValue()));
+        }
     }
 }
