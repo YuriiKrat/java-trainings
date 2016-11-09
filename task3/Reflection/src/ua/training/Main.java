@@ -1,9 +1,6 @@
 package ua.training;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.time.LocalDate;
 
 /**
@@ -42,6 +39,13 @@ public class Main {
                 System.out.println("Parameter: " + parameter.getSimpleName());
             }
         }
+
+        INotebook notebookProxy = (INotebook) Proxy.newProxyInstance(Notebook.class.getClassLoader(),
+                Notebook.class.getInterfaces(),
+                new MyProxy(notebook));
+
+        System.out.println(notebookProxy.getLastName());
+        notebookProxy.setLastName("Some name");
 
     }
 }
